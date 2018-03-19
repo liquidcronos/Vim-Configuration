@@ -91,8 +91,12 @@ if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
 endif
 
+"compile c++"
+autocmd Filetype python nnoremap <buffer> <F9> :exec '!python' shellescape(@%, 1)<cr>
 
-nnoremap <buffer> <F9> :exec '!python' shellescape(@%, 1)<cr>
+"compile with pdflatex"
+autocmd Filetype tex,plaintex nnoremap <buffer> <F9> :exec '!pdflatex %' shellescape(@%, 1)<cr>
+
 "compile c++ (only for single cpp files)
 nnoremap <silent> <f7> :make %<<cr> 
 
@@ -145,13 +149,6 @@ call togglebg#map("<F12>")
 
 "disable omnicomplete
 set omnifunc=off
-"auto compile pdflatex
-au BufEnter *.tex set autowrite
-let g:Tex_DefaultTargetFormat = 'pdf'
-let g:Tex_MultipleCompileFormats = 'pdf'
-let g:Tex_CompileRule_pdf = 'pdflatex -interaction=nonstopmode $*'
-let g:Tex_GotoError = 0
-let g:Tex_ViewRule_pdf = 'evince'
 
 "syntax controll settings
 set statusline+=%#warningmsg#
