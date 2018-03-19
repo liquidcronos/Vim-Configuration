@@ -9,6 +9,9 @@ set grepprg=grep\ -nH\ $*
 " enable syntax highlighting
 syntax enable
 
+
+
+
 " show line numbers
 set number
 
@@ -49,7 +52,7 @@ runtime! debian.vim
 " options, so any other options should be set AFTER setting 'compatible'.
 "set compatible
 
-" Vim5 and later versions support syntax highlighting. Uncommenting the next
+"Vim5 and later versions support syntax highlighting. Uncommenting the next
 " line enables syntax highlighting by default.
 if has("syntax")
   syntax on
@@ -58,7 +61,7 @@ endif
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
 "set background=dark
-
+"
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
 "if has("autocmd")
@@ -75,9 +78,10 @@ endif
 " differently from regular Vi. They are highly recommended though.
 "set showcmd		" Show (partial) command in status line.
 "set showmatch		" Show matching brackets.
-"set ignorecase		" Do case insensitive matching
+set ignorecase		" Do case insensitive matching
 "set smartcase		" Do smart case matching
-"set incsearch		" Incremental search
+set incsearch		" Incremental search
+"set hlsearch       " highlights search
 "set autowrite		" Automatically save before commands like :next and :make
 "set hidden		" Hide buffers when they are abandoned
 "set mouse=a		" Enable mouse usage (all modes)
@@ -89,8 +93,10 @@ endif
 
 
 nnoremap <buffer> <F9> :exec '!python' shellescape(@%, 1)<cr>
+"compile c++ (only for single cpp files)
+nnoremap <silent> <f7> :make %<<cr> 
 
-let g:jedi#auto_initialization = 1
+"let g:jedi#auto_initialization = 1
 
 " Loads Plugins using vim-plug
 call plug#begin('~/.vim/plugged')
@@ -135,6 +141,61 @@ if $COLORTERM == 'gnome-terminal'
   endif
 
 "Change solarized dark and light
-
 call togglebg#map("<F12>")
 
+"disable omnicomplete
+set omnifunc=off
+"auto compile pdflatex
+au BufEnter *.tex set autowrite
+let g:Tex_DefaultTargetFormat = 'pdf'
+let g:Tex_MultipleCompileFormats = 'pdf'
+let g:Tex_CompileRule_pdf = 'pdflatex -interaction=nonstopmode $*'
+let g:Tex_GotoError = 0
+let g:Tex_ViewRule_pdf = 'evince'
+
+"syntax controll settings
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+
+
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" Jump to anywhere you want with minimal keystrokes, with just one key
+" binding.
+" " `s{char}{label}`
+nmap s <Plug>(easymotion-overwin-f)
+" " or
+" " `s{char}{char}{label}`
+" " Need one more keystroke, but on average, it may be more comfortable.
+" nmap s <Plug>(easymotion-overwin-f2)
+"
+" " Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
+"
+" " JK motions: Line motions
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+
+"replace default search with ranger compatible
+map  f <Plug>(easymotion-sn)
+omap f <Plug>(easymotion-tn)
+
+"Toggle NERDTree file browser
+map <C-d> :NERDTreeToggle<CR>
+
+"close vim when nerdtree is only window
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+
+" Use ctrl-[hjkl] to select the active split!
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>
+nmap <silent> <c-l> :wincmd l<CR>
